@@ -18,6 +18,10 @@ class HasPasswordTest < Test::Unit::TestCase
     assert user.valid?
   end
   
+  def test_salt_length
+    assert_equal 4, User.salt_length
+  end
+  
   def test_confirmation
     user = User.create(:username => 'jcoglan', :password => 'foobarfoobar')
     user = User.find_by_username('jcoglan')

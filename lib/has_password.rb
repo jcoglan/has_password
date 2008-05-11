@@ -5,8 +5,8 @@ module HasPassword
   FORBIDDEN = %w(password user system test admin)
   
   # Returns a random string of the given length
-  def self.random_string(length = 8)
-    chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  def self.random_hex(length = 8)
+    chars = '0123456789abcdef'
     (1..length).map { |i| chars[ rand(chars.length) ].chr }.join('')
   end
   
@@ -30,7 +30,7 @@ module HasPassword
     # Sets the password to the given plain-text value
     def password=(pwd)
       @password = pwd.to_s
-      salt = HasPassword.random_string(self.class.salt_size)
+      salt = HasPassword.random_hex(self.class.salt_length)
       send "#{self.class.password_salt_field}=", salt
       send "#{self.class.password_hash_field}=", HasPassword.encrypt(@password, salt)
     end
@@ -51,7 +51,7 @@ module HasPassword
       "#{@password_field}_salt"
     end
     
-    def salt_size
+    def salt_length
       @salt_length
     end
   end
