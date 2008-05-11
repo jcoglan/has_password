@@ -14,4 +14,44 @@ module HasPassword
     Digest::SHA1.hexdigest(hashable)
   end
   
+  def self.included(base)
+    base.send :include, InstanceMethods
+    base.send :extend, ClassMethods
+  end
+  
+  module InstanceMethods
+    # Returns the current plain-text password if it is available
+    def password
+      @password
+    end
+    
+    # Sets the password to the given plain-text value
+    def password=(pwd)
+      @password = pwd.to_s
+      salt = HasPassword.random_string(self.class.salt_size)
+      send "#{self.class.password_salt_field}=", salt
+      send "#{self.class.password_hash_field}=", HasPassword.encrypt(@password, salt)
+    end
+    
+    # Returns +true+ iff the user has the given password
+    def has_password?(pwd)
+      hash, salt = %w(hash salt).map { |f| send self.class.send("password_#{f}_field") }
+      hash == HasPassword.encrypt(pwd, salt)
+    end
+  end
+  
+  module ClassMethods
+    def password_hash_field
+      "#{@password_field}_hash"
+    end
+    
+    def password_salt_field
+      "#{@password_field}_salt"
+    end
+    
+    def salt_size
+      @salt_length
+    end
+  end
+  
 end

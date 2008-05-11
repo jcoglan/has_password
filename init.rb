@@ -1,3 +1,2 @@
-$: << File.expand_path(File.dirname(__FILE__) + '/lib')
-require 'lib/has_password'
-require 'lib/active_record'
+require File.dirname(__FILE__) + '/lib/has_password'
+require File.dirname(__FILE__) + '/lib/macro'
