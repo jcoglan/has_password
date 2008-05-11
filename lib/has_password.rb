@@ -12,7 +12,7 @@ module HasPassword
   
   # Returns the SHA1 hash of the string with the given salt
   def self.encrypt(string, salt = '')
-    hashable = "#{string}#{salt}"
+    hashable = "#{salt}#{string}"
     Digest::SHA1.hexdigest(hashable)
   end
   
