@@ -29,6 +29,7 @@ module HasPassword
     
     # Sets the password to the given plain-text value
     def password=(pwd)
+      return if pwd.blank?
       @password = pwd.to_s
       salt = HasPassword.random_hex(self.class.salt_length)
       send "#{self.class.password_salt_field}=", salt

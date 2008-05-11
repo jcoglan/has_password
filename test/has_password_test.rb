@@ -42,6 +42,9 @@ class HasPasswordTest < Test::Unit::TestCase
     assert user.update_attributes(:password => 'nothing')
     assert !user.has_password?('foobarfoobar')
     assert user.has_password?('nothing')
+    
+    user.update_attributes(:password => '')
+    assert user.has_password?('nothing')
   end
   
   def test_plaintext
