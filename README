@@ -1,13 +1,41 @@
-HasPassword
-===========
+== HasPassword
 
-Introduction goes here.
++has_password+ is a simple password-hashing abstraction for use in ActiveRecord models.
+It is designed to be as simple as possible: it deals only with password handling, not
+with authentication processes, controller code, generators etc.
 
+To use it:
 
-Example
-=======
+  class User < ActiveRecord::Base
+    has_password :salt_size => 16
+  end
 
-Example goes here.
+Your model should have +password_hash+ and +password_salt+ fields. Hashes are 160-bit
+(40-char) SHA1 hashes and salts are random hexadecimal strings of the bit-length you
+specify (16 bits gives you 4 hex digits). Your model will gain three methods:
 
+<tt>user.password=(pwd)<tt>: sets the hash and salt values of user from the given
+plain-text value pwd. The plain-text password is stored in +user+ while in memory but is
+not persisted to the database.
 
-Copyright (c) 2008 [name of plugin creator], released under the MIT license
+<tt>user.password</tt> returns the current plain-text password if one has been set since
++user+ was pulled from the database. An object freshly pulled from the DB will return
++nil+ for this method.
+
+<tt>user.has_password?(pwd)</tt>: returns true iff <tt>user</tt>’s plain-text password
+is equal to +pwd+.
+
+Finally, you get a callback in case you want to do stuff like send password confirmation
+emails. In your model class, put, for example:
+
+  after_password_change :send_notification
+
+or
+
+  after_password_change do |model|
+    UserMailer::deliver_email_notification(model)
+  end
+
+In terms of validation, it automatically <tt>validates_confirmation_of :password</tt>
+and checks supplied passwords for a few obvious silly phrases like, say, +password+ and
++test+. Passwords are only validated if +password+ is non-blank.
