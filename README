@@ -14,7 +14,7 @@ Your model should have +password_hash+ and +password_salt+ fields. Hashes are 16
 (40-char) SHA1 hashes and salts are random hexadecimal strings of the bit-length you
 specify (16 bits gives you 4 hex digits). Your model will gain three methods:
 
-<tt>user.password=(pwd)<tt>: sets the hash and salt values of user from the given
+<tt>user.password=(pwd)</tt>: sets the hash and salt values of user from the given
 plain-text value pwd. The plain-text password is stored in +user+ while in memory but is
 not persisted to the database.
 
