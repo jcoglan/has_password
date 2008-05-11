@@ -70,4 +70,23 @@ class HasPasswordTest < Test::Unit::TestCase
     assert !user.valid?
   end
   
+  def test_after_change_callback
+    user = User.create(:username => 'me', :password => 'something')
+    assert_equal 0, user.count
+    assert_equal 'me', user.username
+    user.update_attributes(:username => 'james')
+    assert_equal 0, user.count
+    assert_equal 'james', user.username
+    user.update_attributes(:password => 'nothing')
+    assert_equal 1, user.count
+    assert_equal 'changed', user.username
+    3.times { user.save }
+    assert_equal 1, user.count
+    user.password = 'nothing'
+    user.save
+    assert_equal 1, user.count
+    user.update_attributes(:password => 'something')
+    assert_equal 2, user.count
+  end
+  
 end

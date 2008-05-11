@@ -6,8 +6,7 @@ module HasPassword
   
   # Returns a random string of the given length
   def self.random_hex(length = 8)
-    chars = '0123456789abcdef'
-    (1..length).map { |i| chars[ rand(chars.length) ].chr }.join('')
+    (1..length).map { |i| rand(16).to_s(16) }.join('')
   end
   
   # Returns the SHA1 hash of the string with the given salt
@@ -19,6 +18,7 @@ module HasPassword
   def self.included(base)
     base.send :include, InstanceMethods
     base.send :extend, ClassMethods
+    base.send :extend, Callbacks
   end
   
   module InstanceMethods

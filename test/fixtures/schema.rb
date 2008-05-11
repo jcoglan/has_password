@@ -4,6 +4,7 @@ ActiveRecord::Schema.define do
     t.string :username
     t.string :password_hash
     t.string :password_salt
+    t.integer :count
   end
   
 end
