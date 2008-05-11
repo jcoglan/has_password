@@ -5,14 +5,14 @@ require File.dirname(__FILE__) + '/../init'
 HasPassword::FORBIDDEN << 'chunky_bacon'
 
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :dbfile => ':memory:'
-require File.dirname(__FILE__) + '/schema'
+require File.dirname(__FILE__) + '/fixtures/schema'
 require File.dirname(__FILE__) + '/fixtures/user'
 
 class HasPasswordTest < Test::Unit::TestCase
   
   def test_format_validation
     user = User.new
-    user.passwd_hash = 'foo'
+    user.password_hash = 'foo'
     assert !user.valid?
     user.password = 'foo'
     assert user.valid?

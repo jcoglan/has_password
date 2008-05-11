@@ -32,26 +32,17 @@ module HasPassword
       return if pwd.blank?
       @password = pwd.to_s
       salt = HasPassword.random_hex(self.class.salt_length)
-      send "#{self.class.password_salt_field}=", salt
-      send "#{self.class.password_hash_field}=", HasPassword.encrypt(@password, salt)
+      self.password_salt = salt
+      self.password_hash = HasPassword.encrypt(@password, salt)
     end
     
     # Returns +true+ iff the user has the given password
     def has_password?(pwd)
-      hash, salt = %w(hash salt).map { |f| send self.class.send("password_#{f}_field") }
-      hash == HasPassword.encrypt(pwd, salt)
+      password_hash == HasPassword.encrypt(pwd, password_salt)
     end
   end
   
   module ClassMethods
-    def password_hash_field
-      "#{@password_field}_hash"
-    end
-    
-    def password_salt_field
-      "#{@password_field}_salt"
-    end
-    
     def salt_length
       @salt_length
     end

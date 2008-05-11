@@ -3,18 +3,16 @@ module ActiveRecord
     class << self
     private
       
-      def has_password(field = :password, options = {})
+      def has_password(options = {})
         include HasPassword
-        
-        @password_field = field
         
         # Store salt size in chars rather than bits. One hex char == 4 bits
         @salt_length = ((options[:salt_size] || 24) / 4).ceil
         
-        attr_protected password_hash_field, password_salt_field
+        attr_protected :password_hash, :password_salt
         
-        validates_format_of password_hash_field, :with => /^[0-9a-f]{40}$/
-        validates_format_of password_salt_field, :with => %r{^[0-9a-f]{#{@salt_length}}$}
+        validates_format_of :password_hash, :with => /^[0-9a-f]{40}$/
+        validates_format_of :password_salt, :with => %r{^[0-9a-f]{#{@salt_length}}$}
         validates_confirmation_of :password
         
         validate do |m|
