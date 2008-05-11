@@ -7,7 +7,7 @@ module ActiveRecord
         include HasPassword
         
         # Store salt size in chars rather than bits. One hex char == 4 bits
-        @salt_length = ((options[:salt_size] || 24) / 4).ceil
+        @salt_length = ((options[:salt_size] || 24) / 4.0).ceil
         
         attr_protected :password_hash, :password_salt
         

@@ -14,9 +14,7 @@ module HasPassword
       
       base.send :after_update do |m|
         m.instance_eval do
-          unless [nil, @saved_password].include?(@password)
-            callback(:after_password_change)
-          end
+          callback(:after_password_change) unless [nil, @saved_password].include?(@password)
         end
       end
     end
