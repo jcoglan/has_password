@@ -47,6 +47,12 @@ class HasPasswordTest < Test::Unit::TestCase
     assert_nil user.password
   end
   
+  def test_blank_password_on_creation
+    assert !User.create.valid?
+    user = User.new(:password => '')
+    assert !user.valid?
+  end
+  
   def test_forbidden_passwords
     user = User.new(:password => 'something')
     assert user.valid?

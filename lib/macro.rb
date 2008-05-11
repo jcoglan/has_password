@@ -15,13 +15,15 @@ module ActiveRecord
         validates_format_of password_salt_field, :with => %r{^[a-z0-9]{#{@salt_length}}$}
         validates_confirmation_of :password
         
-        validate do |passworded|
-          unless passworded.password.blank?
+        validate do |m|
+          unless m.password.blank?
             HasPassword::FORBIDDEN.each do |word|
-              passworded.errors.add(:password, "may not contain the string '#{word}'") if
-                  passworded.password =~ Regexp.new(word, Regexp::IGNORECASE)
+              m.errors.add(:password, "may not contain the string '#{word}'") if
+                  m.password =~ Regexp.new(word, Regexp::IGNORECASE)
             end
           end
+          
+          m.errors.add(:password, 'must not be blank') if m.new_record? and m.password.blank?
         end
       end
       
