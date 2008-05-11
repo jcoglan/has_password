@@ -2,6 +2,7 @@ require 'test/unit'
 require 'rubygems'
 require 'active_record'
 require File.dirname(__FILE__) + '/../init'
+HasPassword::FORBIDDEN << 'chunky_bacon'
 
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :dbfile => ':memory:'
 require File.dirname(__FILE__) + '/schema'
@@ -44,6 +45,16 @@ class HasPasswordTest < Test::Unit::TestCase
     assert_equal 'foobarfoobar', user.password
     user = User.find_by_username('jcoglan')
     assert_nil user.password
+  end
+  
+  def test_forbidden_passwords
+    user = User.new(:password => 'something')
+    assert user.valid?
+    user.password = 'thePaSSwoRD'
+    assert !user.valid?
+    assert user.errors.full_messages.include? "Password may not contain the string 'password'"
+    user.password = 'chUNKy_bacON'
+    assert !user.valid?
   end
   
 end

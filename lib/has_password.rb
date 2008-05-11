@@ -2,6 +2,8 @@ require 'digest/sha1'
 
 module HasPassword
   
+  FORBIDDEN = %w(password user system test admin)
+  
   # Returns a random string of the given length
   def self.random_string(length = 8)
     chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
